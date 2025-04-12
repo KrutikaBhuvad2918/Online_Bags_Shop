@@ -1,0 +1,135 @@
+/* Full-page overlay with transparency */
+.login-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+/* Centered modal container */
+.card-color {
+  background: #ffffff;
+  width: 400px;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  text-align: center;
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Login heading */
+.card-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: black;
+}
+
+/* Subtitle text */
+.card-body p {
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* Input fields container */
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Align center */
+  gap: 10px;
+}
+
+/* Input fields */
+.form-control {
+  width: 90%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  text-align: left; /* Left align text inside input */
+}
+
+/* Password input eye icon */
+.password-container {
+  position: relative;
+  width: 90%;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 35px; /* Space for the eye icon */
+}
+
+.password-container .eye-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+/* Login button */
+.btn-primary {
+  background: black;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px;
+  width: 90%;
+  border-radius: 5px;
+  border: none;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+/* Forgot password and signup link */
+.text-link {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  margin: 10px auto;
+  font-size: 14px;
+  color: #555;
+}
+
+.text-link a {
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.text-link a:hover {
+  text-decoration: underline;
+}
+
+/* Signup text */
+.signup-text {
+  font-size: 14px;
+  margin-top: 15px;
+  color: #555;
+}
+
+.signup-text a {
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.signup-text a:hover {
+  text-decoration: underline;
+}
+

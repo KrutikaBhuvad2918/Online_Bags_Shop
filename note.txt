@@ -1,0 +1,543 @@
+import React, { useContext } from 'react';
+import './CartItems.css';
+import { ShopContext } from '../../Context/ShopContext';
+import remove_icon from '../Assets/cart_cross_icon.png';
+import { useNavigate } from 'react-router-dom';
+
+const CartItems = () => {
+    const { getTotalCartAmount, all_product, cartItems, removeFromCart } = useContext(ShopContext);
+    const navigate = useNavigate();
+
+    return (
+        <div className='cartitems'>
+            <div className="cartitems-format-main">
+                <p>Products</p>
+                <p>Title</p>
+                <p>Price</p>
+                <p>Quantity</p>
+                <p>Total</p>
+                <p>Remove</p>
+            </div>
+            <hr />
+            
+            {/* ✅ Filter only added items instead of looping all products */}
+            {Object.keys(cartItems).map((itemId) => {
+                const product = all_product.find((e) => e.id === Number(itemId));
+                if (!product) return null;
+
+                return (
+                    <div key={product.id}>
+                        <div className="cartitems-format cartitems-format-main">
+                            <img className='carticon-product-icon' src={product.image} alt={product.name} />
+                            <p>{product.name}</p>
+                            <p>₹{product.new_price}</p>
+                            <button className='cartitems-quantity'>{cartItems[itemId]}</button>
+                            <p>₹{product.new_price * cartItems[itemId]}</p>
+                            <img className='cartitems-remove-icon' onClick={() => removeFromCart(product.id)} src={remove_icon} alt="Remove" />
+                        </div>
+                        <hr />
+                    </div>
+                );
+            })}
+            
+            <div className="cartitems-down">
+                <div className="cartitems-totals">
+                    <h1>Cart Totals</h1>
+                    <div>
+                        <div className="cartitems-total-item">
+                            <p>Subtotal</p>
+                            <p>₹{getTotalCartAmount()}</p>
+                        </div>
+                        <hr />
+                        <div className="cartitems-total-item">
+                            <p>Shipping Fee</p>
+                            <p>Free</p>
+                        </div>
+                        <hr />
+                        <div className="cartitems-total-item">
+                            <h3>Total</h3>
+                            <h3>₹{getTotalCartAmount()}</h3>
+                        </div>
+                    </div>
+                    <button onClick={() => navigate('/place-order')}>PROCEED TO CHECKOUT</button>
+                </div>
+                <div className="cartitems-promocode">
+                    <p>If you have a promo code, enter it here</p>
+                    <div className="cartitems-promobox">
+                        <input type="text" placeholder='Promo code' />
+                        <button>Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default CartItems;
+
+
+placeorder code
+
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './CSS/PlaceOrder.css';
+import stripeLogo from '../Components/Assets/Stripe-Logo.png';
+import razorpayLogo from '../Components/Assets/Razerpay-Logo.jpg';
+import { ShopContext } from '../Context/ShopContext';
+import { db } from '../Components/FirebaseAuth/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
+const PlaceOrder = () => {
+    const { getTotalCartAmount, cartItems, all_product, clearCart } = useContext(ShopContext);
+    const navigate = useNavigate();
+    const [selectedPayment, setSelectedPayment] = useState('cod');
+    const [deliveryInfo, setDeliveryInfo] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        street: '',
+        city: '',
+        state: '',
+        zipcode: '',
+        country: '',
+        phone: '',
+    });
+
+    // ✅ Handle form input changes
+    const handleInputChange = (e) => {
+        setDeliveryInfo({ ...deliveryInfo, [e.target.name]: e.target.value });
+    };
+
+    // ✅ Place Order & Save to Firestore
+    const handleOrder = async () => {
+        if (Object.values(deliveryInfo).some(value => value.trim() === '')) {
+            alert('Please fill in all delivery details.');
+            return;
+        }
+
+        try {
+            const orderItems = Object.keys(cartItems).map((itemId) => {
+                const product = all_product.find((item) => item.id === Number(itemId));
+                if (!product) return null;
+
+                return {
+                    id: product.id,
+                    name: product.name,
+                    price: product.new_price,
+                    quantity: cartItems[itemId],
+                    total: product.new_price * cartItems[itemId],
+                };
+            }).filter(Boolean);
+
+            const orderData = {
+                firstName: deliveryInfo.firstName,
+                lastName: deliveryInfo.lastName,
+                email: deliveryInfo.email,
+                phone: deliveryInfo.phone,
+                address: {
+                    street: deliveryInfo.street,
+                    city: deliveryInfo.city,
+                    state: deliveryInfo.state,
+                    zipcode: deliveryInfo.zipcode,
+                    country: deliveryInfo.country
+                },
+                items: orderItems,
+                totalAmount: getTotalCartAmount() + 10, // Including shipping fee
+                paymentMethod: selectedPayment,
+                timestamp: serverTimestamp(),
+            };
+
+            await addDoc(collection(db, 'orders'), orderData);
+
+            alert('Order placed successfully!');
+            clearCart(); // Clear cart after successful order
+            navigate('/');
+        } catch (error) {
+            console.error('Error placing order:', error);
+            // alert('Failed to place order. Please try again.');
+        }
+    };
+
+    return (
+        <div className='place-order-container'>
+            <div className='order-form-container'>
+                <h2>DELIVERY <span>INFORMATION</span></h2>
+                <form>
+                    <div className='input-row'>
+                        <input type='text' name='firstName' placeholder='First name' required onChange={handleInputChange} />
+                        <input type='text' name='lastName' placeholder='Last name' required onChange={handleInputChange} />
+                    </div>
+                    <input type='email' name='email' placeholder='Email address' required onChange={handleInputChange} />
+                    <input type='text' name='street' placeholder='Street' required onChange={handleInputChange} />
+                    <div className='input-row'>
+                        <input type='text' name='city' placeholder='City' required onChange={handleInputChange} />
+                        <input type='text' name='state' placeholder='State' required onChange={handleInputChange} />
+                    </div>
+                    <div className='input-row'>
+                        <input type='text' name='zipcode' placeholder='Zipcode' required onChange={handleInputChange} />
+                        <input type='text' name='country' placeholder='Country' required onChange={handleInputChange} />
+                    </div>
+                    <input type='text' name='phone' placeholder='Phone' required onChange={handleInputChange} />
+                </form>
+            </div>
+            
+            <div className='order-summary-container'>
+                <h2>CART <span>TOTALS</span></h2>
+
+                <div className='order-summary1'>
+                    <h2>Order Summary</h2>
+                    {all_product.map((item) => {
+                        if (cartItems[item.id] > 0) {
+                            return (
+                                <div className='order-item' key={item.id}>
+                                    <img src={item.image} alt={item.name} />
+                                    <p>{item.name} x {cartItems[item.id]}</p>
+                                    <p>₹{item.new_price * cartItems[item.id]}</p>
+                                </div>
+                            );
+                        }
+                        return null;
+                    })}
+                    <h3>Total  : ₹{getTotalCartAmount()}</h3>
+                </div>
+                
+                <div className='order-summary'>
+                    <p>Subtotal <span>₹ {getTotalCartAmount()}</span></p>
+                    <p>Shipping Fee <span>₹ 10.00</span></p>
+                    <hr />
+                    <h3>Total <span>₹ {getTotalCartAmount() + 10}</span></h3>
+                </div>
+                
+                <h3>PAYMENT METHOD</h3>
+                <div className='payment-options'>
+                    <label className={`payment-option ${selectedPayment === 'stripe' ? 'selected' : ''}`} onClick={() => setSelectedPayment('stripe')}>
+                        <input type='radio' name='payment' value='stripe' checked={selectedPayment === 'stripe'} readOnly />
+                        <img src={stripeLogo} alt='Stripe' />
+                    </label>
+                    <label className={`payment-option ${selectedPayment === 'razorpay' ? 'selected' : ''}`} onClick={() => setSelectedPayment('razorpay')}>
+                        <input type='radio' name='payment' value='razorpay' checked={selectedPayment === 'razorpay'} readOnly />
+                        <img src={razorpayLogo} alt='Razorpay' />
+                    </label>
+                    <label className={`payment-option cod-option ${selectedPayment === 'cod' ? 'selected' : ''}`} onClick={() => setSelectedPayment('cod')}>
+                        <input type='radio' name='payment' value='cod' checked={selectedPayment === 'cod'} readOnly /> Cash on Delivery
+                    </label>
+                </div>
+                <button className='place-order-btn' onClick={handleOrder}>PLACE ORDER</button>
+            </div>
+        </div>
+    );
+};
+
+export default PlaceOrder;
+
+
+ShopContext imp code
+
+import React, { createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { db } from "../Components/FirebaseAuth/firebase";
+import { collection, doc, setDoc, getDoc, addDoc, serverTimestamp } from "firebase/firestore";
+import { auth } from "../Components/FirebaseAuth/firebase"; // Firebase authentication
+import all_product from "../Components/Assets/all_product";
+
+export const ShopContext = createContext();
+
+const ShopContextProvider = ({ children }) => {
+    const [cartItems, setCartItems] = useState({});
+    const [wishlist, setWishlist] = useState([]);
+    const [orderHistory, setOrderHistory] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const navigate = useNavigate();
+
+    // ✅ Fetch cart from Firestore when user logs in
+    useEffect(() => {
+        const fetchCart = async () => {
+            const user = auth.currentUser;
+            if (user) {
+                const cartRef = doc(db, "carts", user.uid);
+                const cartSnap = await getDoc(cartRef);
+
+                if (cartSnap.exists()) {
+                    setCartItems(cartSnap.data().items.reduce((acc, item) => {
+                        acc[item.id] = item.quantity;
+                        return acc;
+                    }, {}));
+                }
+            }
+        };
+        fetchCart();
+    }, []);
+
+    // ✅ Save cart to Firestore
+    const saveCartToFirestore = async (newCart) => {
+        const user = auth.currentUser;
+        if (!user) {
+            console.error("User not logged in!");
+            return;
+        }
+
+        const cartRef = doc(db, "carts", user.uid);
+        const cartData = Object.keys(newCart).map((itemId) => {
+            const product = all_product.find((item) => item.id === Number(itemId));
+            return product ? {
+                id: product.id,
+                name: product.name,
+                price: product.new_price,
+                quantity: newCart[itemId],
+                total: product.new_price * newCart[itemId],
+            } : null;
+        }).filter(Boolean);
+
+        try {
+            await setDoc(cartRef, { items: cartData });
+        } catch (error) {
+            console.error("Error saving cart:", error);
+        }
+    };
+
+    // ✅ Add to cart
+    const addToCart = (itemId) => {
+        setCartItems((prev) => {
+            const newCart = { ...prev, [itemId]: (prev[itemId] || 0) + 1 };
+            saveCartToFirestore(newCart);
+            return newCart;
+        });
+    };
+
+    // ✅ Remove from cart
+    const removeFromCart = (itemId) => {
+        setCartItems((prev) => {
+            const newCart = { ...prev };
+            if (newCart[itemId] > 1) {
+                newCart[itemId] -= 1;
+            } else {
+                delete newCart[itemId];
+            }
+            saveCartToFirestore(newCart);
+            return newCart;
+        });
+    };
+
+    // ✅ Get total cart items
+    const getTotalCartItems = () => {
+        return Object.values(cartItems).reduce((sum, quantity) => sum + quantity, 0);
+    };
+
+    // ✅ Calculate total cart amount
+    const getTotalCartAmount = () => {
+        return Object.keys(cartItems).reduce((total, itemId) => {
+            const product = all_product.find((item) => item.id === Number(itemId));
+            return product ? total + (product.new_price * cartItems[itemId]) : total;
+        }, 0);
+    };
+
+    // ✅ Add to wishlist
+    const addToWishlist = (item) => {
+        setWishlist((prev) => [...prev, item]);
+    };
+
+    // ✅ Remove from wishlist
+    const removeFromWishlist = (itemId) => {
+        setWishlist((prev) => prev.filter(item => item.id !== itemId));
+    };
+
+    // ✅ Place Order (Save Order in Firestore)
+    const placeOrder = async (deliveryInfo, paymentMethod) => {
+        try {
+            const user = auth.currentUser;
+            if (!user) {
+                alert("Please login to place an order!");
+                return;
+            }
+
+            const orderData = {
+                userId: user.uid,
+                items: Object.keys(cartItems).map((itemId) => {
+                    const product = all_product.find((item) => item.id === Number(itemId));
+                    return product ? {
+                        id: product.id,
+                        name: product.name,
+                        price: product.new_price,
+                        quantity: cartItems[itemId],
+                        total: product.new_price * cartItems[itemId],
+                    } : null;
+                }).filter(Boolean),
+                totalAmount: getTotalCartAmount() + 10, // Including shipping fee
+                paymentMethod,
+                deliveryInfo,
+                timestamp: serverTimestamp(),
+            };
+
+            await addDoc(collection(db, "orders"), orderData);
+            alert("Order placed successfully!");
+
+            // Clear cart after order
+            setCartItems({});
+            saveCartToFirestore({});
+        } catch (error) {
+            console.error("Error placing order:", error);
+            alert("Failed to place order. Try again.");
+        }
+    };
+
+    // ✅ Fetch order history from Firestore
+    useEffect(() => {
+        const fetchOrderHistory = async () => {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const ordersRef = collection(db, "orders");
+            const ordersSnapshot = await getDoc(doc(ordersRef, user.uid));
+
+            if (ordersSnapshot.exists()) {
+                setOrderHistory(ordersSnapshot.data().orders || []);
+            }
+        };
+        fetchOrderHistory();
+    }, []);
+
+    return (
+        <ShopContext.Provider value={{
+            getTotalCartItems,
+            getTotalCartAmount,
+            all_product,
+            cartItems,
+            addToCart,
+            removeFromCart,
+            searchQuery,
+            setSearchQuery,
+            navigate,
+            addToWishlist,
+            wishlist,
+            removeFromWishlist,
+            placeOrder,
+            orderHistory,
+        }}>
+            {children}
+        </ShopContext.Provider>
+    );
+};
+
+export default ShopContextProvider;
+
+
+cartitems confirm code
+
+import React, { useContext } from 'react';
+import './CartItems.css';
+import { ShopContext } from '../../Context/ShopContext';
+import remove_icon from '../Assets/cart_cross_icon.png';
+import { useNavigate } from 'react-router-dom';
+import { db } from '../FirebaseAuth/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
+const CartItems = () => {
+    const { getTotalCartAmount, all_product, cartItems, removeFromCart } = useContext(ShopContext);
+    const navigate = useNavigate();
+
+    // ✅ Checkout function
+    const handleCheckout = async () => {
+        try {
+            const cartData = Object.keys(cartItems)
+                .map((itemId) => {
+                    const product = all_product.find((e) => e.id === Number(itemId));
+                    if (!product) return null;
+    
+                    return {
+                        id: product.id,
+                        name: product.name,
+                        price: product.new_price,
+                        quantity: cartItems[itemId],
+                        total: product.new_price * cartItems[itemId],
+                    };
+                })
+                .filter(Boolean); // Remove null values
+    
+            if (cartData.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+    
+            // ✅ Save order to Firestore
+            await addDoc(collection(db, 'orders'), {
+                items: cartData,
+                timestamp: serverTimestamp(),
+            });
+    
+            // ✅ Show alert before navigation
+            // alert("Order placed successfully!");
+    
+            // ✅ Navigate after alert confirmation
+            navigate('/place-order');
+        } catch (error) {
+            console.error("Error saving order:", error);
+            alert("Something went wrong! Please try again.");
+        }
+    };
+    
+
+    return (
+        <div className='cartitems'>
+            <div className="cartitems-format-main">
+                <p>Products</p>
+                <p>Title</p>
+                <p>Price</p>
+                <p>Quantity</p>
+                <p>Total</p>
+                <p>Remove</p>
+            </div>
+            <hr />
+
+            {Object.keys(cartItems).map((itemId) => {
+                const product = all_product.find((e) => e.id === Number(itemId));
+                if (!product) return null;
+
+                return (
+                    <div key={product.id}>
+                        <div className="cartitems-format cartitems-format-main">
+                            <img className='carticon-product-icon' src={product.image} alt={product.name} />
+                            <p>{product.name}</p>
+                            <p>₹{product.new_price}</p>
+                            <button className='cartitems-quantity'>{cartItems[itemId]}</button>
+                            <p>₹{product.new_price * cartItems[itemId]}</p>
+                            <img className='cartitems-remove-icon' onClick={() => removeFromCart(product.id)} src={remove_icon} alt="Remove" />
+                        </div>
+                        <hr />
+                    </div>
+                );
+            })}
+
+            <div className="cartitems-down">
+                <div className="cartitems-totals">
+                    <h1>Cart Totals</h1>
+                    <div>
+                        <div className="cartitems-total-item">
+                            <p>Subtotal</p>
+                            <p>₹{getTotalCartAmount()}</p>
+                        </div>
+                        <hr />
+                        <div className="cartitems-total-item">
+                            <p>Shipping Fee</p>
+                            <p>Free</p>
+                        </div>
+                        <hr />
+                        <div className="cartitems-total-item">
+                            <h3>Total</h3>
+                            <h3>₹{getTotalCartAmount()}</h3>
+                        </div>
+                    </div>
+                    <button onClick={handleCheckout}>PROCEED TO CHECKOUT</button>
+                </div>
+                {/* <div className="cartitems-promocode">
+                    <p>If you have a promo code, enter it here</p>
+                    <div className="cartitems-promobox">
+                        <input type="text" placeholder='Promo code' />
+                        <button>Submit</button>
+                    </div>
+                </div> */}
+            </div>
+        </div>
+    );
+};
+
+export default CartItems;

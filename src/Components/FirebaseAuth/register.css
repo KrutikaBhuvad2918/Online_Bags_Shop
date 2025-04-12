@@ -1,0 +1,25 @@
+.register-bg {
+    background-color: #ffffff; /* Adjust background color */
+    height: 100vh; /* Full screen height */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+  }
+  
+  .card-color {
+    background: rgba(255, 255, 255, 0.1); /* Slight transparency */
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .text-white a {
+    color: #00aaff; /* Highlight links */
+    text-decoration: none;
+  }
+  
+  .text-white a:hover {
+    text-decoration: underline;
+  }
+  

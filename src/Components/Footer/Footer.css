@@ -1,0 +1,141 @@
+.footer {
+    background: black;
+    color: white;
+    padding: 40px 80px;
+  }
+  
+  .footer-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .footer-section {
+    flex: 1;
+    /* min-width: 200px; */
+    margin-bottom: 20px;
+  }
+  
+  .footer-section h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .footer-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .footer-section ul li {
+    margin-bottom: 8px;
+  }
+  
+  .footer-section ul li a {
+    text-decoration: none;
+    color: grey;
+    font-size: 15px;
+  }
+  
+  .footer-section ul li a:hover {
+    text-decoration: underline;
+  }
+  
+  .news-input {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 10px;
+  }
+  
+  .news-input input {
+    padding: 10px;
+    width: 15rem;
+    border: 1px solid white;
+    color: white;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    background-color: black;
+  }
+  
+  .footer-section-newsletter p{
+    width: 20rem;
+    color: grey;
+    margin: 1rem 0rem;
+    font-size: 15px;
+  }
+  
+  .news-input button {
+    padding: 10px 12px;
+    margin-left: 6px;
+    background: white;
+    color: black;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .social-icons {
+    display: flex;
+    gap: 25px;
+    margin-top: 15px;
+  }
+  
+  .social-icons a {
+    color: rgb(181, 173, 173);
+    font-size: 20px;
+  }
+  
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    /* margin-top: 40px; */
+    border-top: 1px solid gray;
+    padding-top: 20px;
+  }
+  
+  .currency-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .flag {
+    width: 20px;
+    height: 15px;
+  }
+  
+  .payment-img {
+    display: flex;
+  }
+
+  .footer-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 20px;
+    text-align: left;
+}
+
+.footer-map {
+    width: 30%;
+    min-width: 250px;
+    margin-right: 5.5rem;
+}
+.footer-map h3{
+  margin-bottom: 12px;
+}
+.footer-map p{
+  font-size: 14px;
+  padding: 4px;
+}
+.footer-map iframe {
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* .footer-section,
+.footer-section-newsletter {
+    width: 25%;
+    min-width: 250px;
+} */

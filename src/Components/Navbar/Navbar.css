@@ -1,0 +1,135 @@
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    padding: 16px;
+    box-shadow: 0 1px 3px -2px black;
+    position: sticky; /* Makes the navbar stick */
+    top: 0; /* Sticks to the top of the page */
+    width: 97.7%; /* Full width */
+    background: white; /* Ensures it has a background */
+    z-index: 1000; /* Ensures it stays above other elements */
+}
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-logo p {
+    color: #171717;
+    font-size: 38px;
+    font-weight: 600;
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 50px;
+    padding-left: 8rem;
+    /* margin-left: 7rem; */
+    color: #626262;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.nav-menu li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+}
+
+.nav-menu hr {
+    border: none;
+    width: 80%;
+    height: 3px;
+    border-radius: 10px;
+    background: #ff4141;
+}
+
+.nav-login-cart {
+    display: flex;
+    align-items: center;
+    gap: 45px;
+}
+
+.nav-login-cart button {
+    width: 100px;
+    height: 40px;
+    outline: none;
+    border: 1px solid #7a7a7a;
+    border-radius: 75px;
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+    background: rgb(220, 50, 50);
+    cursor: pointer;
+}
+
+.nav-login-cart button:active {
+    background: #f3f3f3;
+}
+
+.nav-cart-count {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -35px;
+    margin-left: -53px;
+    border-radius: 11px;
+    font-size: 14px;
+    background: red;
+    color: white;
+}
+
+.cart {
+    height: 30px;
+    width: 30px;
+}
+
+/* Search Icon */
+.search-icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    margin-left: 3rem;
+}
+.nav-search-container {
+    display: flex;
+    align-items: center;
+}
+
+/* Search Bar Overlay */
+.overlay-search-bar {
+    position: absolute;
+    top: 100%; /* Right under navbar */
+    left: 0;
+    width: 100%; /* Full width */
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+}
+
+.overlay-search-bar input.search-bar {
+    width: 60%;
+    max-width: 600px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+.user-name {
+    margin-right: -30px;
+    font-weight: 500;
+    color: #333;
+  }
+  
