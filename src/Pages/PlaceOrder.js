@@ -5,12 +5,14 @@ import stripeLogo from '../Components/Assets/Stripe-Logo.png';
 import razorpayLogo from '../Components/Assets/Razerpay-Logo.jpg';
 import { ShopContext } from '../Context/ShopContext';
 import { db, auth } from '../Components/FirebaseAuth/firebase';
-import { collection, addDoc, serverTimestamp} from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import OrderSuccessModal from '../Pages/OrderSuccessModal';
 
 const PlaceOrder = () => {
     const { getTotalCartAmount, cartItems, all_product, clearCart } = useContext(ShopContext);
     const navigate = useNavigate();
     const [selectedPayment, setSelectedPayment] = useState('cod');
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [deliveryInfo, setDeliveryInfo] = useState({
         firstName: '',
         lastName: '',
@@ -71,13 +73,10 @@ const PlaceOrder = () => {
                 timestamp: serverTimestamp(),
             };
 
-            // ✅ Save order in nested structure: Orders -> {userId} -> orders -> {orderId}
             const userOrdersRef = collection(db, 'Orders', user.uid, 'orders');
             await addDoc(userOrdersRef, orderData);
 
-            alert('Order placed successfully!');
             clearCart();
-
             setDeliveryInfo({
                 firstName: '',
                 lastName: '',
@@ -90,7 +89,10 @@ const PlaceOrder = () => {
                 phone: '',
             });
 
-            navigate('/');
+            setShowSuccessModal(true); // ✅ Show modal
+           
+            console.log("✅ Success modal triggered!");
+    
         } catch (error) {
             console.error('Error placing order:', error);
         }
@@ -98,6 +100,7 @@ const PlaceOrder = () => {
 
     return (
         <div className='place-order-container'>
+            {/* Delivery Info Form */}
             <div className='order-form-container'>
                 <h2>DELIVERY <span>INFORMATION</span></h2>
                 <form>
@@ -119,9 +122,9 @@ const PlaceOrder = () => {
                 </form>
             </div>
 
+            {/* Cart Summary */}
             <div className='order-summary-container'>
                 <h2>CART <span>TOTALS</span></h2>
-
                 <div className='order-summary1'>
                     <h2>Order Summary</h2>
                     {all_product.map((item) => {
@@ -162,6 +165,14 @@ const PlaceOrder = () => {
                 </div>
                 <button className='place-order-btn' onClick={handleOrder}>PLACE ORDER</button>
             </div>
+
+            {/* ✅ Modal */}
+            {showSuccessModal && (
+                <OrderSuccessModal onClose={() => {
+                    setShowSuccessModal(false);
+                    navigate('/');
+                }} />
+            )}
         </div>
     );
 };

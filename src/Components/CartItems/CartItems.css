@@ -92,3 +92,13 @@
     color: white;
     cursor: pointer;
 }
+.order-history{
+    padding: 12px 18px;
+    border-radius: 10rem;
+    border-style: none;
+    background-color: #ff5a5a;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}

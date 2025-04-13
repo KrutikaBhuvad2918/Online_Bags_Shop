@@ -63,6 +63,7 @@ const CartItems = () => {
 
     return (
         <div className="cartitems">
+            <button className="order-history" onClick={() => navigate('/order-history')}>My Order History</button>
             <div className="cartitems-format-main">
                 <p>Products</p>
                 <p>Title</p>

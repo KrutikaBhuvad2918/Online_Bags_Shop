@@ -48,6 +48,11 @@ const ShopContextProvider = ({ children }) => {
         }
     };
 
+    const clearCart = () => {
+        setCartItems({}); // Clears the cart
+      };
+    
+
     // ✅ Save cart to Firestore (Only for logged-in user)
     const saveCartToFirestore = async (newCart) => {
         if (!user) return;
@@ -194,6 +199,7 @@ const ShopContextProvider = ({ children }) => {
             removeFromWishlist,
             placeOrder,
             orderHistory,
+            clearCart
         }}>
             {children}
         </ShopContext.Provider>

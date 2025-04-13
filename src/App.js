@@ -17,6 +17,7 @@ import clutch_banner from './Components/Assets/clutch_banner.png';
 import handbag_banner from './Components/Assets/Handbag_banner.png';
 import backpack_banner from './Components/Assets/backpack_banner.jpeg';
 import travelbag_banner from './Components/Assets/travelbag_banner.jpeg';
+import OrderHistory from './Pages/OrderHistory.js';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -51,6 +52,7 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/place-order" element={<PlaceOrder />} />
+            <Route path="/order-history" element={<OrderHistory />} />
             <Route path="/login" element={<Navigate to="/" />} />
             <Route path="/register" element={<Navigate to="/" />} />
           </>

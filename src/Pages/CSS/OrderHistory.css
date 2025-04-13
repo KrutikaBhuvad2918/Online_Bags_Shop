@@ -1,0 +1,106 @@
+.order-history-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .order-history-container h2 {
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+    color: #111;
+  }
+  
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .order-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 25px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  }
+  
+  .order-left {
+    flex: 1;
+  }
+  
+  .status-delivered {
+    color: #34c471;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .order-left p {
+    margin: 5px 0;
+    font-size: 0.95rem;
+    color: #333;
+  }
+  
+  .order-left strong {
+    color: #111;
+  }
+  
+  .download-invoice {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .order-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .order-product {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  
+  .order-product:last-child {
+    border-bottom: none;
+  }
+  
+  .order-product img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .product-details h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: #111;
+  }
+  
+  .product-details p {
+    margin: 3px 0;
+    font-size: 1.3rem;
+    color: #555;
+  }
+  
+  .buy-again {
+    margin-top: 4px;
+    display: inline-block;
+    color: #5c3bfc;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .prize{
+    font-weight: bold;
+  }
